@@ -6,6 +6,8 @@ rust-version = "1.85"
 description = "Rust network authorization platform with admin console, card licensing, remote API, cloud storage, and release tooling."
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/16dongdong/network-auth-rust"
+homepage = "https://github.com/16dongdong/network-auth-rust"
 keywords = ["auth", "licensing", "axum", "mysql", "vibe-coding"]
 publish = false
 

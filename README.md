@@ -1,16 +1,31 @@
 # Network Auth Rust
 
+[![CI](https://github.com/16dongdong/network-auth-rust/actions/workflows/ci.yml/badge.svg)](https://github.com/16dongdong/network-auth-rust/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+![Rust 2024](https://img.shields.io/badge/Rust-2024-orange.svg)
+![Axum](https://img.shields.io/badge/Axum-0.8-blue.svg)
+![Vibe Coding](https://img.shields.io/badge/Vibe%20Coding-project-purple.svg)
+
 Network Auth Rust 是一个使用 **Vibe Coding** 协作完成的网络授权验证平台。它把授权服务、卡密管理、设备绑定、后台控制台、远程 API、云存储分发、安装初始化和发布验证组合在一个 Rust 后端项目里，适合作为完整后端工程案例阅读、运行和二次开发。
 
 项目使用 Axum、Tokio、SQLx 和 MySQL / MariaDB 构建，前端控制台使用原生 HTML、CSS、JavaScript 实现，采用 MIT License 开源。
+
+## 为什么值得看
+
+| 看点 | 说明 |
+| --- | --- |
+| 完整产品闭环 | 从客户端授权、后台管理、安装初始化到部署切换都有真实实现。 |
+| 安全协议密度高 | 覆盖 HMAC、防重放、AES-GCM、RSA 密钥封装、P256 设备签名和敏感配置加密。 |
+| 工程化程度高 | 包含 schema、SDK 模板、CI、审计脚本、发布 smoke、readiness gate 和回滚脚本。 |
+| 适合简历展示 | 不是单点 demo，而是可以展示后端设计、系统安全、运维发布和自动化验证的综合项目。 |
 
 ## 预览
 
 截图来自本地 Rust 后端和 MariaDB 数据库运行环境。
 
-![后台控制台](docs/screenshots/admin-console.png)
-
-![安装向导](docs/screenshots/install-wizard.png)
+| 后台控制台 | 安装向导 |
+| --- | --- |
+| ![后台控制台](docs/screenshots/admin-console.png) | ![安装向导](docs/screenshots/install-wizard.png) |
 
 ## 功能
 
