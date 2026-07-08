@@ -20,7 +20,7 @@ chrono = { version = "0.4", default-features = false, features = ["clock", "serd
 clap = { version = "4.5", features = ["derive"] }
 form_urlencoded = "1.2"
 hex = "0.4"
-hmac = "0.12"
+hmac = "0.13"
 image = { version = "0.25", default-features = false, features = ["gif", "jpeg", "png", "webp"] }
 md-5 = "0.10"
 rand = "0.8"
