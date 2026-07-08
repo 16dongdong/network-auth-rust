@@ -1,0 +1,608 @@
+[hidden] {
+    display: none !important;
+}
+
+:root {
+    --primary: #9b7fd4;
+    --primary-light: #f3eeff;
+    --primary-dark: #7c5fbf;
+    --accent: #f7a8c4;
+    --accent-light: #fff0f6;
+    --gradient-primary: linear-gradient(135deg, #9b7fd4, #f7a8c4);
+    --gradient-soft: linear-gradient(135deg, #f3eeff, #fff0f6);
+    --gradient-card: linear-gradient(160deg, #ffffff 60%, #f9f5ff);
+    --success: #7ed6a0;
+    --warning: #ffd07a;
+    --danger: #f58e8e;
+    --info: #7ec8e3;
+    --text-primary: #3d3456;
+    --text-secondary: #6b6085;
+    --text-muted: #a99fc0;
+    --bg-page: #faf8ff;
+    --bg-card: #ffffff;
+    --border: #ede8f5;
+    --shadow: 0 4px 20px rgba(155, 127, 212, 0.08);
+    --shadow-hover: 0 8px 32px rgba(155, 127, 212, 0.15);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    margin: 0;
+    background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.72) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.72) 1px, transparent 1px),
+        linear-gradient(180deg, #faf8ff 0%, #fff7fb 56%, #f7fcff 100%);
+    background-size: 36px 36px, 36px 36px, auto;
+    color: var(--text-secondary);
+    font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", Arial, sans-serif;
+    font-size: 14px;
+    letter-spacing: 0;
+}
+
+button,
+input {
+    font: inherit;
+}
+
+img {
+    max-width: 100%;
+}
+
+.install-page-decor {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+}
+
+.install-page-decor::before,
+.install-page-decor::after {
+    content: "";
+    position: absolute;
+    opacity: 0.28;
+}
+
+.install-page-decor::before {
+    top: 72px;
+    right: 8%;
+    width: 240px;
+    height: 120px;
+    background:
+        linear-gradient(135deg, transparent 46%, rgba(155, 127, 212, 0.2) 47% 53%, transparent 54%),
+        linear-gradient(45deg, transparent 46%, rgba(247, 168, 196, 0.16) 47% 53%, transparent 54%);
+}
+
+.install-page-decor::after {
+    bottom: 54px;
+    left: 20%;
+    width: 190px;
+    height: 110px;
+    background:
+        linear-gradient(135deg, transparent 46%, rgba(126, 200, 227, 0.16) 47% 53%, transparent 54%),
+        linear-gradient(45deg, transparent 46%, rgba(126, 214, 160, 0.14) 47% 53%, transparent 54%);
+}
+
+.install-shell {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 280px minmax(0, 1fr);
+    min-height: 100vh;
+}
+
+.install-side {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    min-height: 100vh;
+    padding: 30px 24px;
+    border-right: 1px solid rgba(237, 232, 245, 0.9);
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow: 8px 0 30px rgba(155, 127, 212, 0.08);
+    backdrop-filter: blur(16px);
+}
+
+.brand {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.brand-mark {
+    position: relative;
+    display: grid;
+    flex: 0 0 46px;
+    overflow: hidden;
+    width: 46px;
+    height: 46px;
+    place-items: center;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    box-shadow: 0 10px 26px rgba(155, 127, 212, 0.24);
+    color: #fff;
+    font-weight: 800;
+    animation: avatar-breathe 5s ease-in-out infinite;
+}
+
+.brand-mark::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+}
+
+.brand-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(180deg, #fff8fc, #f3eeff);
+    object-fit: cover;
+    object-position: 50% 42%;
+}
+
+.brand strong {
+    display: block;
+    color: var(--text-primary);
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.brand span {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.step-list {
+    display: grid;
+    gap: 10px;
+}
+
+.step-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 48px;
+    padding: 12px 14px;
+    overflow: hidden;
+    border: 1px solid transparent;
+    border-radius: 14px;
+    color: var(--text-secondary);
+    font-weight: 700;
+}
+
+.step-item::before {
+    content: "";
+    position: absolute;
+    inset: 9px auto 9px 0;
+    width: 3px;
+    border-radius: 999px;
+    background: transparent;
+}
+
+.step-index {
+    display: grid;
+    width: 28px;
+    height: 28px;
+    flex: 0 0 auto;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary-dark);
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.step-item.active {
+    border-color: rgba(155, 127, 212, 0.16);
+    background: var(--primary-light);
+    color: var(--text-primary);
+    box-shadow: var(--shadow);
+}
+
+.step-item.active::before,
+.step-item.active .step-index {
+    background: var(--gradient-primary);
+}
+
+.step-item.active .step-index {
+    color: #fff;
+}
+
+.install-mascot {
+    margin-top: auto;
+    padding: 18px 14px 16px;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    background:
+        linear-gradient(180deg, rgba(255, 240, 246, 0.86), rgba(243, 238, 255, 0.72)),
+        #fff;
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.install-mascot .mascot-img {
+    width: 159px;
+    height: 212px;
+}
+
+.install-mascot span {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 28px;
+    margin-top: 8px;
+    padding: 5px 14px;
+    border: 1px solid rgba(155, 127, 212, 0.16);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.install-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    padding: 42px;
+}
+
+.install-card {
+    width: min(960px, 100%);
+    overflow: hidden;
+    border: 1px solid rgba(237, 232, 245, 0.95);
+    border-radius: 20px;
+    background: var(--gradient-card);
+    box-shadow: 0 18px 48px rgba(155, 127, 212, 0.12);
+    animation: install-panel-in 250ms ease both;
+}
+
+.install-card::before {
+    content: "";
+    display: block;
+    height: 4px;
+    background: var(--gradient-primary);
+}
+
+.install-beian {
+    align-self: center;
+    margin-top: 14px;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+}
+
+.install-beian:hover {
+    color: var(--primary);
+}
+
+.card-head {
+    padding: 30px 34px 20px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, rgba(243, 238, 255, 0.78), rgba(255, 240, 246, 0.6));
+}
+
+.card-head h1 {
+    margin: 0 0 8px;
+    color: var(--text-primary);
+    font-size: 26px;
+    font-weight: 800;
+}
+
+.card-head p {
+    max-width: 760px;
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.75;
+}
+
+.card-body {
+    padding: 30px 34px 34px;
+}
+
+.check-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 14px;
+}
+
+.check-item {
+    position: relative;
+    min-height: 94px;
+    padding: 18px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: var(--shadow);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.check-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+}
+
+.check-item::after {
+    content: "";
+    position: absolute;
+    right: 16px;
+    bottom: 16px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(126, 214, 160, 0.24), rgba(126, 200, 227, 0.2));
+}
+
+.check-item strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.check-item span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 26px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: rgba(126, 214, 160, 0.16);
+    color: #2f8b55;
+    font-size: 13px;
+    font-weight: 800;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.form-grid .wide {
+    grid-column: 1 / -1;
+}
+
+label span {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+    font-weight: 800;
+}
+
+.layui-input {
+    height: 44px;
+    border-color: var(--border);
+    border-radius: 12px;
+    color: var(--text-primary);
+}
+
+.layui-input:focus {
+    border-color: rgba(155, 127, 212, 0.64) !important;
+    box-shadow: 0 0 0 4px rgba(155, 127, 212, 0.12);
+}
+
+input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0 8px 0 0;
+    accent-color: var(--primary);
+    vertical-align: -3px;
+}
+
+.error-box {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border: 1px solid rgba(245, 142, 142, 0.38);
+    border-radius: 14px;
+    background: #fff5f7;
+    color: #b94a5a;
+    font-weight: 700;
+}
+
+.help-text {
+    display: block;
+    margin-top: 7px;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.install-note {
+    margin-bottom: 20px;
+    padding: 15px 18px;
+    border: 1px solid rgba(126, 200, 227, 0.36);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(126, 200, 227, 0.12), rgba(126, 214, 160, 0.1));
+    color: var(--text-secondary);
+    line-height: 1.75;
+}
+
+.action-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 28px;
+}
+
+.layui-btn {
+    min-width: 112px;
+    height: 40px;
+    border-radius: 999px;
+    font-weight: 800;
+    transition: transform 200ms ease, box-shadow 200ms ease, background 200ms ease;
+}
+
+.layui-btn:hover {
+    transform: scale(1.02);
+}
+
+.layui-btn-normal {
+    border: 0;
+    background: var(--gradient-primary);
+    box-shadow: 0 10px 24px rgba(155, 127, 212, 0.22);
+}
+
+.layui-btn-normal:hover {
+    box-shadow: 0 14px 30px rgba(155, 127, 212, 0.28);
+}
+
+.layui-btn-primary {
+    border-color: rgba(155, 127, 212, 0.34);
+    background: #fff;
+    color: var(--primary-dark);
+}
+
+.layui-btn-primary:hover {
+    border-color: rgba(155, 127, 212, 0.44);
+    background: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+.result-list {
+    display: grid;
+    gap: 12px;
+}
+
+.result-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.result-row strong {
+    color: var(--text-primary);
+    font-weight: 800;
+}
+
+.result-row span,
+code {
+    color: var(--text-secondary);
+}
+
+code {
+    max-width: 64ch;
+    word-break: break-all;
+}
+
+.mascot-img {
+    display: block;
+    width: auto;
+    margin: 0 auto;
+    object-fit: contain;
+    pointer-events: none;
+    user-select: none;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+@keyframes install-panel-in {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes avatar-breathe {
+    0%,
+    100% {
+        box-shadow: 0 10px 26px rgba(155, 127, 212, 0.24);
+        transform: translateY(0);
+    }
+
+    50% {
+        box-shadow: 0 14px 32px rgba(247, 168, 196, 0.28);
+        transform: translateY(-2px);
+    }
+}
+
+@media (max-width: 980px) {
+    .install-shell {
+        grid-template-columns: 1fr;
+    }
+
+    .install-side {
+        min-height: auto;
+    }
+
+    .install-mascot {
+        display: none;
+    }
+
+    .install-main {
+        align-items: flex-start;
+        padding: 20px;
+    }
+}
+
+@media (max-width: 640px) {
+    .install-side {
+        padding: 20px;
+    }
+
+    .step-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .step-item {
+        min-height: 44px;
+        padding: 10px;
+    }
+
+    .card-head,
+    .card-body {
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+
+    .card-head h1 {
+        font-size: 22px;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .action-row,
+    .result-row {
+        display: grid;
+    }
+
+    .layui-btn {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}

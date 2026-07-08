@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>授权管理系统安装说明</title>
+  <style>
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;line-height:1.7;margin:0;background:#f5f7fb;color:#1f2937}
+    main{max-width:880px;margin:48px auto;padding:32px;background:#fff;border:1px solid #e5e7eb}
+    h1{font-size:24px;margin:0 0 18px}
+    h2{font-size:18px;margin:28px 0 10px}
+    code{background:#f3f4f6;padding:2px 6px}
+  </style>
+</head>
+<body>
+<main>
+  <h1>授权管理系统安装说明</h1>
+  <p>安装脚本会创建网络验证所需数据表，并自动生成系统密钥、后台 API 管理密钥和初始后台管理员密码。</p>
+  <h2>安装命令</h2>
+  <p><code>php tools\scripts\install.php</code></p>
+  <h2>安全要求</h2>
+  <p>安装完成后请立即保存命令行输出的初始密码和管理密钥，并在首次登录后修改后台密码。配置文件、日志、缓存和会话目录不得暴露到公网可下载路径。</p>
+  <h2>使用边界</h2>
+  <p>本系统只提供应用授权验证、卡密、设备、会话和审计能力。旧代理、旧支付、旧模板和旧服务器管理功能已删除。</p>
+</main>
+</body>
+</html>

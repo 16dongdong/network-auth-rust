@@ -1,0 +1,21 @@
+[Unit]
+Description=ACE Network Auth Rust backend
+Wants=network-online.target
+After=network-online.target mysql.service mariadb.service
+
+[Service]
+Type=simple
+User=nginx
+Group=nginx
+WorkingDirectory=/var/www/ace-network-auth/current
+Environment=RUST_LOG=info
+ExecStart=/var/www/ace-network-auth/current/network-auth-rust serve --listen 127.0.0.1:18080 --config /var/www/ace-network-auth/current/config/local.php --public-root /var/www/ace-network-auth/current/public --schema /var/www/ace-network-auth/current/resources/install/schema.sql --install-lock /var/www/ace-network-auth/shared/storage/cache/install.lock
+Restart=on-failure
+RestartSec=3
+KillSignal=SIGTERM
+TimeoutStopSec=30
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target

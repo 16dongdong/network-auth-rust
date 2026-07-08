@@ -1,0 +1,41 @@
+[package]
+name = "network-auth-rust"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+description = "Rust network authorization platform with admin console, card licensing, remote API, cloud storage, and release tooling."
+license = "MIT"
+readme = "README.md"
+keywords = ["auth", "licensing", "axum", "mysql", "vibe-coding"]
+publish = false
+
+[dependencies]
+aes = "0.8"
+aes-gcm = "0.10"
+axum = "0.8"
+base64 = "0.22"
+bcrypt = "0.17"
+cbc = { version = "0.1", features = ["std"] }
+chrono = { version = "0.4", default-features = false, features = ["clock", "serde"] }
+clap = { version = "4.5", features = ["derive"] }
+form_urlencoded = "1.2"
+hex = "0.4"
+hmac = "0.12"
+image = { version = "0.25", default-features = false, features = ["gif", "jpeg", "png", "webp"] }
+md-5 = "0.10"
+rand = "0.8"
+p256 = { version = "0.13", features = ["ecdsa", "pem"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+rsa = { version = "0.9", features = ["pem"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = { version = "1.0", features = ["preserve_order"] }
+sha1 = "0.10"
+sha2 = "0.10"
+sqlx = { version = "0.8", default-features = false, features = ["runtime-tokio", "tls-rustls", "mysql", "chrono", "json"] }
+subtle = "2.6"
+thiserror = "2.0"
+tokio = { version = "1.48", features = ["macros", "rt-multi-thread", "net", "signal", "sync"] }
+tower-http = { version = "0.6", features = ["fs", "trace"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter", "fmt"] }
+zip = { version = "6.0.0", default-features = false, features = ["deflate"] }

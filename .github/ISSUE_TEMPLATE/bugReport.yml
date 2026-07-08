@@ -1,0 +1,36 @@
+name: Bug 报告
+description: 提交可复现的运行错误或行为异常
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: 问题描述
+      description: 简要说明发生了什么，以及你期望的结果。
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请提供可以稳定复现的最小步骤。
+      placeholder: |
+        1. 执行 ...
+        2. 打开 ...
+        3. 看到 ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 运行环境
+      description: 操作系统、Rust 版本、MySQL 或 MariaDB 版本、启动命令。
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志或错误输出
+      description: 请先移除密码、Token、域名、IP、用户数据等敏感内容。
+      render: text

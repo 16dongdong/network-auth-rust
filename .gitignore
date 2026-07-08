@@ -1,0 +1,43 @@
+/target/
+
+# Local runtime and secrets
+/config/local.php
+/config/*.config.php
+/.env
+/.env.*
+/docs/*.private.md
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.csr
+
+# Logs and generated files
+/storage/cache/*
+!/storage/cache/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+/storage/runtime-cache/*
+!/storage/runtime-cache/.gitkeep
+/storage/build/*
+/storage/cloud-storage/*
+!/storage/cloud-storage/.gitkeep
+/storage/tmp/
+/storage/admin-slider-image-pool/
+*.log
+*.tmp
+*.bak
+*.zip
+*.tar
+*.tar.gz
+
+# IDE and OS files
+/.idea/
+/.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini

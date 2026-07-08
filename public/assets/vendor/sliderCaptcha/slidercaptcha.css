@@ -1,0 +1,201 @@
+.block {
+    position: absolute;
+    left: 0;
+    top: 0;
+    will-change: left;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+}
+
+.card-header {
+    padding: .75rem 1.25rem;
+    margin-bottom: 0;
+    background-color: rgba(0,0,0,.03);
+    border-bottom: 1px solid rgba(0,0,0,.125);
+}
+
+    .card-header:first-child {
+        border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
+    }
+
+.card-body {
+    flex: 1 1 auto;
+    padding: 1.25rem;
+}
+
+.sliderContainer {
+    position: relative;
+    text-align: center;
+    line-height: 40px;
+    background: #f7f9fa;
+    color: #45494c;
+    border-radius: 10px;
+    touch-action: none;
+}
+
+.sliderbg {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: #f7f9fa;
+    height: 40px;
+    border-radius: 10px;
+    border: 1px solid #e6e8eb;
+}
+
+.sliderContainer_active .slider {
+    top: -1px;
+    border: 1px solid #1991FA;
+    box-shadow: 0 10px 22px rgba(126, 106, 171, .18);
+}
+
+.sliderContainer_active .sliderMask {
+    border-width: 1px 0 1px 1px;
+}
+
+.sliderContainer_success .slider {
+    top: -1px;
+    border: 1px solid #52CCBA;
+    background-color: #52CCBA !important;
+}
+
+.sliderContainer_success .sliderMask {
+    border: 1px solid #52CCBA;
+    border-width: 1px 0 1px 1px;
+    background-color: #D2F4EF;
+}
+
+.sliderContainer_success .sliderIcon:before {
+    content: "✓";
+}
+
+.sliderContainer_fail .slider {
+    top: -1px;
+    border: 1px solid #f57a7a;
+    background-color: #f57a7a !important;
+}
+
+.sliderContainer_fail .sliderMask {
+    border: 1px solid #f57a7a;
+    background-color: #fce1e1;
+    border-width: 1px 0 1px 1px;
+}
+
+.sliderContainer_fail .sliderIcon:before {
+    content: "×";
+}
+
+.sliderContainer_active .sliderText, .sliderContainer_success .sliderText, .sliderContainer_fail .sliderText {
+    display: none;
+}
+
+.sliderMask {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 40px;
+    border: 0 solid #1991FA;
+    background: #D1E9FE;
+    border-radius: 10px;
+    will-change: width;
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(76, 59, 116, 0.16);
+    cursor: pointer;
+    transition: background .2s linear, border-color .2s linear, box-shadow .2s linear, transform .18s ease;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+    user-select: none;
+    will-change: left, transform;
+}
+
+    .slider:hover {
+        background: #1991FA;
+    }
+
+        .slider:hover .sliderIcon {
+            background-position: 0 -13px;
+        }
+
+.slider:focus-visible {
+    outline: 3px solid rgba(25, 145, 250, .35);
+    outline-offset: 3px;
+}
+
+.sliderText {
+    position: relative;
+}
+
+.sliderIcon {
+    color: #7e6aab;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 800;
+}
+
+.sliderContainer_dragging .slider {
+    cursor: grabbing;
+    transform: scale(1.03);
+}
+
+.sliderContainer_resetting .slider,
+.sliderContainer_resetting .block {
+    transition: left .24s cubic-bezier(.22, 1, .36, 1), background .2s linear, border-color .2s linear, box-shadow .2s linear;
+}
+
+.sliderContainer_resetting .sliderMask {
+    transition: width .24s cubic-bezier(.22, 1, .36, 1);
+}
+
+.sliderContainer_success .sliderIcon,
+.sliderContainer_fail .sliderIcon {
+    font-size: 0;
+}
+
+.sliderContainer_success .sliderIcon:before,
+.sliderContainer_fail .sliderIcon:before {
+    font-size: 16px;
+}
+
+.refreshIcon {
+    position: absolute;
+    right: 0;
+    top: 0;
+    cursor: pointer;
+    margin: 6px;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: rgba(0,0,0,.25);
+    font-size: 1rem;
+    z-index: 5;
+    transition: color .3s linear;
+}
+
+.refreshIcon::before {
+    content: "↻";
+}
+
+    .refreshIcon:hover {
+        color: #6c757d;
+    }

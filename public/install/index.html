@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>安装向导 - 授权管理系统</title>
+    <link rel="preload" href="/assets/fonts/nunito/nunitoLatin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/frontend/admin-console/js/img/brand-avatar.webp" as="image" type="image/webp">
+    <link rel="preload" href="/frontend/admin-console/js/img/install-welcome.webp" as="image" type="image/webp">
+    <link rel="stylesheet" href="/assets/fonts/nunito/nunitoLatin.css?v=20260608-local-font">
+    <link rel="stylesheet" href="../assets/layui/css/layui.css?v=2.13.7">
+    <link rel="stylesheet" href="/install/install.css?v=20260608-beian-footer">
+    <script src="/assets/js/mascot-breathing.js?v=20260602-breathing-algorithm" defer></script>
+</head>
+<body>
+    <div class="install-page-decor" aria-hidden="true"></div>
+    <div class="install-shell">
+        <aside class="install-side">
+            <div class="brand">
+                <div class="brand-mark">
+                    <img src="/frontend/admin-console/js/img/brand-avatar.webp" alt="" class="brand-avatar" fetchpriority="high">
+                </div>
+                <div>
+                    <strong>授权管理系统</strong>
+                    <span>安装向导</span>
+                </div>
+            </div>
+            <div class="step-list"><div class="step-item active"><span class="step-index">1</span><span>环境检查</span></div><div class="step-item"><span class="step-index">2</span><span>数据库配置</span></div><div class="step-item"><span class="step-index">3</span><span>管理员账号</span></div><div class="step-item"><span class="step-index">4</span><span>安装完成</span></div></div>            <div class="install-mascot" aria-hidden="true">
+                <img src="/frontend/admin-console/js/img/install-welcome.webp" alt="" class="mascot-img" fetchpriority="high" data-mascot-breath data-mascot-breath-amplitude="2" data-mascot-breath-period="8800">
+                <span>先检查环境，我们一步一步把系统装好</span>
+            </div>
+        </aside>
+        <main class="install-main">
+            <section class="install-card">
+                <div class="card-head">
+    <h1>环境检查</h1>
+    <p>安装向导会检查运行环境、写入配置文件、初始化数据库表，并创建第一个后台管理员。</p>
+</div>
+<div class="card-body">
+    <div class="check-grid">
+                    <div class="check-item">
+                <strong>PHP 版本</strong>
+                <span>8.3.31</span>
+            </div>
+                    <div class="check-item">
+                <strong>mysqli 扩展</strong>
+                <span>可用</span>
+            </div>
+                    <div class="check-item">
+                <strong>openssl 扩展</strong>
+                <span>可用</span>
+            </div>
+                    <div class="check-item">
+                <strong>配置目录</strong>
+                <span>可写</span>
+            </div>
+                    <div class="check-item">
+                <strong>缓存目录</strong>
+                <span>可写</span>
+            </div>
+                    <div class="check-item">
+                <strong>Cookie 会话</strong>
+                <span>可用</span>
+            </div>
+            </div>
+    <div class="action-row">
+        <span></span>
+        <a class="layui-btn layui-btn-normal" href="/install/?step=database">开始安装</a>
+    </div>
+</div>
+                </section>
+            <span class="install-beian">Open-source preview build</span>
+        </main>
+    </div>
+</body>
+</html>
+    

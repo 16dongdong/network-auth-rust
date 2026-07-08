@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="renderer" content="webkit">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="robots" content="noindex,nofollow">
+    <title id="document-title">授权管理系统</title>
+    <link rel="preload" href="../../assets/fonts/nunito/nunitoLatin.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="../../frontend/admin-console/js/img/brand-avatar.webp" as="image" type="image/webp">
+    <link rel="preload" href="../../frontend/admin-console/js/img/console-welcome.webp" as="image" type="image/webp">
+    <link rel="stylesheet" href="../../assets/fonts/nunito/nunitoLatin.css?v=20260608-local-font">
+    <link rel="stylesheet" href="../../assets/layui/css/layui.css?v=2.13.7">
+    <link rel="stylesheet" href="../../sub_admin/css/theme.css">
+    <link rel="stylesheet" href="../../frontend/admin-console/css/app.css?v=20260611-remote-lua-variable-list">
+    <script src="../../assets/js/mascot-breathing.js?v=20260602-breathing-algorithm" defer></script>
+</head>
+<body class="layui-layout-body">
+<div id="auth-admin-root" class="layui-layout layui-layout-admin auth-admin auth-pending">
+    <div class="anime-page-decor" aria-hidden="true"></div>
+    <aside class="layui-side auth-side">
+        <div class="layui-side-scroll">
+            <button id="admin-account-entry" type="button" class="auth-logo" data-action="open-admin-account" aria-label="打开管理员账号管理">
+                <div class="auth-logo-mark"><img src="../../frontend/admin-console/js/img/brand-avatar.webp" alt="" class="auth-logo-avatar" fetchpriority="high"></div>
+                <div class="auth-logo-text">
+                    <strong id="site-brand-name">授权管理系统</strong>
+                    <span id="site-brand-subtitle">授权管理平台</span>
+                </div>
+                <i class="layui-icon layui-icon-right auth-logo-arrow" aria-hidden="true"></i>
+            </button>
+            <ul class="layui-nav layui-nav-tree auth-nav" aria-label="网络验证导航">
+                <li class="layui-nav-item layui-this"><button type="button" data-view="dashboard"><i class="layui-icon layui-icon-console"></i><span>仪表盘</span></button></li>
+                <li class="layui-nav-item"><button type="button" data-view="apps"><i class="layui-icon layui-icon-app"></i><span>应用管理</span></button></li>
+                <li class="layui-nav-item"><button type="button" data-view="variables"><i class="layui-icon layui-icon-slider"></i><span>远程变量</span></button></li>
+                <li class="layui-nav-item"><button type="button" data-view="remoteApi"><i class="layui-icon layui-icon-key"></i><span>远程 API</span></button></li>
+                <li class="layui-nav-item"><button type="button" data-view="cloudStorage"><i class="layui-icon layui-icon-upload"></i><span>云存储</span></button></li>
+                <li class="layui-nav-item"><button type="button" data-view="settings"><i class="layui-icon layui-icon-set"></i><span>网页配置</span></button></li>
+            </ul>
+            <div class="side-mascot" aria-hidden="true">
+                <img id="side-mascot-image" src="../../frontend/admin-console/js/img/console-welcome.webp" alt="" class="mascot-img" fetchpriority="high" data-mascot-breath data-mascot-breath-amplitude="2" data-mascot-breath-period="8800">
+                <span id="side-mascot-text">今日也要认真守护授权哦</span>
+            </div>
+        </div>
+    </aside>
+
+    <header class="layui-header auth-header">
+        <button id="side-toggle" type="button" class="icon-button side-toggle" aria-label="打开导航"><i class="layui-icon layui-icon-spread-left"></i></button>
+        <div class="header-title">
+            <strong id="page-title">仪表盘</strong>
+            <span id="active-app-label">未进入应用</span>
+        </div>
+        <div class="header-actions">
+            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="refresh-all"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+        </div>
+    </header>
+
+    <main class="layui-body auth-body">
+        <div class="auth-shell">
+            <div id="notice" class="auth-toast" hidden></div>
+
+            <section class="view-panel dashboard-panel layui-show" data-panel="dashboard">
+                <div class="stats-grid">
+                    <div class="stat-card"><i class="layui-icon layui-icon-app"></i><span>应用总数</span><strong id="stat-apps">0</strong><em>平台应用</em></div>
+                    <div class="stat-card"><i class="layui-icon layui-icon-note"></i><span>卡密总数</span><strong id="stat-cards">0</strong><em>授权凭证</em></div>
+                    <div class="stat-card"><i class="layui-icon layui-icon-auz"></i><span>绑定设备</span><strong id="stat-devices">0</strong><em>累计终端</em></div>
+                    <div class="stat-card"><i class="layui-icon layui-icon-link"></i><span>在线会话</span><strong id="stat-sessions">0</strong><em>近 5 分钟活跃</em></div>
+                </div>
+
+                <div class="dashboard-main-grid">
+                    <section class="surface-panel dashboard-status-panel">
+                        <div class="section-header">
+                            <div class="panel-title compact">
+                                <h2>运行概览</h2>
+                            </div>
+                        </div>
+                        <div class="dashboard-status-grid">
+                            <div class="dashboard-status-group">
+                                <h3>卡密状态</h3>
+                                <div id="overview-card-status" class="compact-metric-grid"></div>
+                            </div>
+                            <div class="dashboard-status-group">
+                                <h3>设备状态</h3>
+                                <div id="overview-device-status" class="compact-metric-grid"></div>
+                            </div>
+                            <div class="dashboard-status-group">
+                                <h3>登录质量</h3>
+                                <div id="overview-login-ip-stats" class="compact-metric-grid"></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="surface-panel activity-panel">
+                        <div class="section-header">
+                            <div class="panel-title compact">
+                                <h2>最近活动</h2>
+                                <p id="activity-source"></p>
+                            </div>
+                        </div>
+                        <div id="recent-activity" class="activity-list"></div>
+                    </section>
+
+                    <section class="surface-panel maintenance-panel dashboard-maintenance-panel">
+                        <div class="section-header">
+                            <div class="panel-title compact">
+                                <h2>系统维护</h2>
+                            </div>
+                        </div>
+                        <div class="maintenance-actions">
+                            <button type="button" class="quick-action" data-action="cleanup-nonces"><i class="layui-icon layui-icon-delete"></i><span>清理过期数据</span></button>
+                        </div>
+                    </section>
+                </div>
+            </section>
+
+            <section class="view-panel" data-panel="settings">
+                <section class="surface-panel site-settings-panel">
+                    <div class="panel-title">
+                        <h2>网页配置</h2>
+                    </div>
+                    <form id="site-settings-form" class="layui-form site-settings-form">
+                        <div class="settings-group">
+                            <div class="settings-group-title">
+                                <strong>品牌信息</strong>
+                            </div>
+                            <div class="settings-grid">
+                                <label><span>系统名称</span><input name="hostname" class="layui-input" autocomplete="off" required placeholder="例如：我的授权平台"></label>
+                                <label><span>导航副标题</span><input name="site_subtitle" class="layui-input" autocomplete="off" placeholder="例如：授权管理平台"></label>
+                                <label><span>Logo 图片 URL</span><input name="logo_url" class="layui-input" autocomplete="off" placeholder="留空则使用默认头像"></label>
+                            </div>
+                        </div>
+                        <div class="settings-group">
+                            <div class="settings-group-title">
+                                <strong>登录页展示</strong>
+                            </div>
+                            <div class="settings-grid">
+                                <label><span>登录页标题</span><input name="login_title" class="layui-input" autocomplete="off" placeholder="后台登录"></label>
+                                <label><span>登录页副标题</span><input name="login_subtitle" class="layui-input" autocomplete="off" placeholder="LOGIN"></label>
+                                <label><span>登录欢迎标签</span><input name="login_badge" class="layui-input" autocomplete="off" placeholder="Welcome back"></label>
+                                <label><span>侧栏看板娘文案</span><input name="side_mascot_text" class="layui-input" autocomplete="off" placeholder="今日也要认真守护授权哦"></label>
+                                <label><span>登录页联系方式</span><input name="contact" class="layui-input" autocomplete="off" placeholder="QQ / 邮箱 / 工单链接"></label>
+                                <label><span>登录页底部文案</span><input name="footer_text" class="layui-input" autocomplete="off" placeholder="例如：Powered by ACE"></label>
+                            </div>
+                            <label class="settings-block"><span>登录页提示文案</span><textarea name="login_notice" class="layui-textarea" rows="3" placeholder="显示在登录页表单上方"></textarea></label>
+                            <label class="settings-block"><span>登录页公告备用文案</span><textarea name="announcement" class="layui-textarea" rows="3" placeholder="登录页提示文案为空时显示"></textarea></label>
+                        </div>
+                        <div class="settings-actions">
+                            <button type="button" class="layui-btn layui-btn-primary" data-action="reload-site-settings">重置为已保存</button>
+                            <button type="submit" class="layui-btn layui-btn-normal">保存站点配置</button>
+                        </div>
+                    </form>
+                </section>
+            </section>
+
+            <section class="view-panel" data-panel="account">
+                <div class="account-grid">
+                    <section class="surface-panel account-summary-panel">
+                        <div class="section-header">
+                            <div class="panel-title compact">
+                                <h2>账号管理</h2>
+                            </div>
+                            <div class="row-actions">
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="reload-admin-profile"><i class="layui-icon layui-icon-refresh"></i>刷新资料</button>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="logout-admin">退出登录</button>
+                            </div>
+                        </div>
+                        <div class="account-summary-content">
+                                <div class="account-identity">
+                                <div class="account-avatar-card">
+                                    <img id="admin-account-avatar" src="../../frontend/admin-console/js/img/brand-avatar.webp" alt="" class="auth-logo-avatar">
+                                </div>
+                                <div class="account-identity-text">
+                                    <strong id="admin-profile-current-username">-</strong>
+                                    <span>当前登录管理员</span>
+                                </div>
+                            </div>
+                            <div class="account-status-grid">
+                                <div class="account-status-item">
+                                    <span>记住登录</span>
+                                    <strong id="admin-profile-remember-status">未启用</strong>
+                                    <em id="admin-profile-remember-expires">-</em>
+                                </div>
+                                <div class="account-status-item">
+                                    <span>后台会话</span>
+                                    <strong id="admin-profile-session-expires">-</strong>
+                                    <em>当前加密会话到期时间</em>
+                                </div>
+                                <div class="account-status-item">
+                                    <span>账号状态</span>
+                                    <strong id="admin-profile-updated-at">-</strong>
+                                    <em id="admin-profile-created-at">-</em>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="surface-panel account-form-panel">
+                        <div class="panel-title compact">
+                            <h2>修改账号与密码</h2>
+                        </div>
+                        <form id="admin-profile-form" class="layui-form account-form">
+                            <div class="account-form-grid">
+                                <label><span>新管理员账号</span><input id="admin-profile-username" name="username" class="layui-input" autocomplete="username" maxlength="32" placeholder="保存后需要重新登录" required></label>
+                                <label><span>当前密码</span><input name="current_password" type="password" class="layui-input" autocomplete="current-password" required></label>
+                                <label><span>新密码</span><input name="new_password" type="password" class="layui-input" autocomplete="new-password" maxlength="72"></label>
+                                <label><span>确认新密码</span><input name="confirm_password" type="password" class="layui-input" autocomplete="new-password" maxlength="72"></label>
+                            </div>
+                            <div class="settings-actions">
+                                <button type="button" class="layui-btn layui-btn-primary" data-action="reset-admin-profile-form">恢复当前资料</button>
+                                <button type="button" class="layui-btn layui-btn-primary" data-action="clear-remember-login">清除记住登录</button>
+                                <button type="submit" class="layui-btn layui-btn-normal">保存账号设置</button>
+                            </div>
+                        </form>
+                    </section>
+                </div>
+            </section>
+
+            <section class="view-panel" data-panel="apps">
+                <section class="surface-panel">
+                    <div class="section-header">
+                        <div class="panel-title compact">
+                            <h2>应用管理</h2>
+                        </div>
+                        <div class="row-actions">
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="load-apps"><i class="layui-icon layui-icon-refresh"></i>刷新应用</button>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="open-app-batch-actions">批量操作</button>
+                        </div>
+                    </div>
+                    <div class="selection-line">
+                        <label><input type="checkbox" name="select_all_apps" data-action="toggle-app-selection"> 全选当前应用</label>
+                    </div>
+                    <div id="apps-grid" class="app-grid"></div>
+                </section>
+            </section>
+
+            <section class="view-panel" data-panel="variables">
+                <section class="surface-panel">
+                    <div class="section-header">
+                        <div class="panel-title compact">
+                            <h2>远程变量</h2>
+                        </div>
+                        <div class="row-actions">
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="load-variables"><i class="layui-icon layui-icon-refresh"></i>刷新变量</button>
+                            <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" data-action="open-variable-modal"><i class="layui-icon layui-icon-add-circle"></i>添加变量</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-row">
+                        <label class="search-field"><i class="layui-icon layui-icon-search"></i><input id="variable-search" name="variable_search" type="search" placeholder="搜索变量名" autocomplete="off"></label>
+                        <select id="variable-scope-filter" class="filter-select" lay-ignore>
+                            <option value="">全部作用域</option>
+                            <option value="public">公共变量</option>
+                            <option value="private">私有变量</option>
+                        </select>
+                        <select id="variable-status-filter" class="filter-select" lay-ignore>
+                            <option value="">全部状态</option>
+                            <option value="1">启用</option>
+                            <option value="0">禁用</option>
+                        </select>
+                        <select id="variable-app-filter" class="filter-select" lay-ignore>
+                            <option value="">全部应用</option>
+                        </select>
+                    </div>
+                    <div class="selection-line">
+                        <label><input type="checkbox" name="select_all_variables" data-action="toggle-variable-selection"> 全选当前变量</label>
+                    </div>
+                    <div class="table-wrap fixed-table">
+                        <table class="layui-table modern-table" lay-size="sm">
+                            <thead><tr><th class="check-cell"></th><th>变量名</th><th>作用域</th><th>授权应用</th><th>状态</th><th>变量值</th><th>更新时间</th><th>操作</th></tr></thead>
+                            <tbody id="variables-table"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </section>
+
+            <section class="view-panel" data-panel="remoteApi">
+                <section class="surface-panel">
+                    <div class="section-header">
+                        <div class="panel-title compact">
+                            <h2>远程 API</h2>
+                        </div>
+                        <div class="row-actions">
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="load-remote-api"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                        </div>
+                    </div>
+                    <nav class="auth-subnav remote-api-tabs" aria-label="远程 API 页面">
+                        <button type="button" class="layui-this" data-remote-api-view="tokens"><i class="layui-icon layui-icon-key"></i>Token 管理</button>
+                        <button type="button" data-remote-api-view="logs"><i class="layui-icon layui-icon-log"></i>调用日志</button>
+                    </nav>
+
+                    <div class="remote-api-pane remote-api-pane-show" data-remote-api-section="tokens">
+                        <div class="section-header inner-header">
+                            <div class="panel-title compact">
+                                <h2>Token 管理</h2>
+                            </div>
+                            <div class="row-actions">
+                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" data-action="open-remote-api-token-modal"><i class="layui-icon layui-icon-add-circle"></i>创建 Token</button>
+                            </div>
+                        </div>
+                        <div class="toolbar-row">
+                            <label class="search-field"><i class="layui-icon layui-icon-search"></i><input id="remote-api-token-search" name="remote_api_token_search" type="search" placeholder="搜索 Token 名称或 accessKey" autocomplete="off"></label>
+                            <select id="remote-api-token-status-filter" class="filter-select" lay-ignore>
+                                <option value="">全部状态</option>
+                                <option value="1">启用</option>
+                                <option value="0">禁用</option>
+                            </select>
+                        </div>
+                        <div class="table-wrap fixed-table">
+                            <table class="layui-table modern-table" lay-size="sm">
+                                <thead><tr><th>名称</th><th>AccessKey</th><th>状态</th><th>白名单</th><th>最后调用</th><th>创建时间</th><th>操作</th></tr></thead>
+                                <tbody id="remote-api-tokens-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="remote-api-pane" data-remote-api-section="logs">
+                        <div class="section-header inner-header">
+                            <div class="panel-title compact">
+                                <h2>调用日志</h2>
+                            </div>
+                            <div class="row-actions">
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="load-remote-api-logs"><i class="layui-icon layui-icon-refresh"></i>刷新日志</button>
+                                <button type="button" class="layui-btn layui-btn-danger layui-btn-sm" data-action="clear-remote-api-logs"><i class="layui-icon layui-icon-delete"></i>清空日志</button>
+                            </div>
+                        </div>
+                        <div class="toolbar-row">
+                            <label class="search-field"><i class="layui-icon layui-icon-search"></i><input id="remote-api-log-search" name="remote_api_log_search" type="search" placeholder="搜索 Token 或消息" autocomplete="off"></label>
+                            <select id="remote-api-log-status-filter" class="filter-select" lay-ignore>
+                                <option value="">全部结果</option>
+                                <option value="success">成功</option>
+                                <option value="failed">失败</option>
+                            </select>
+                            <select id="remote-api-log-token-filter" class="filter-select" lay-ignore>
+                                <option value="">全部 Token</option>
+                            </select>
+                        </div>
+                        <div class="table-wrap fixed-table">
+                            <table class="layui-table modern-table" lay-size="sm">
+                                <thead><tr><th>时间</th><th>Token</th><th>动作</th><th>结果</th><th>操作</th></tr></thead>
+                                <tbody id="remote-api-logs-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section class="view-panel" data-panel="cloudStorage">
+                <section class="surface-panel">
+                    <div class="section-header">
+                        <div class="panel-title compact">
+                            <h2>云存储</h2>
+                        </div>
+                        <div class="row-actions">
+                            <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" data-action="open-cloud-upload-modal"><i class="layui-icon layui-icon-upload"></i>上传文件</button>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="load-cloud-storage"><i class="layui-icon layui-icon-refresh"></i>刷新</button>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="open-cloud-token-modal"><i class="layui-icon layui-icon-key"></i>Token 管理</button>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="open-cloud-config"><i class="layui-icon layui-icon-set"></i>存储配置</button>
+                        </div>
+                    </div>
+                    <div class="cloud-storage-pane cloud-storage-pane-show" data-cloud-storage-section="files">
+                        <div id="cloud-storage-summary" class="cloud-storage-summary"></div>
+                        <div class="toolbar-row">
+                            <label class="search-field"><i class="layui-icon layui-icon-search"></i><input id="cloud-file-search" name="cloud_file_search" type="search" placeholder="搜索文件名、文件 Key、SHA256" autocomplete="off"></label>
+                            <select id="cloud-file-provider-filter" class="filter-select" lay-ignore>
+                                <option value="">全部来源</option>
+                                <option value="local">服务器本地</option>
+                                <option value="aliyun_oss">阿里云 OSS</option>
+                                <option value="tencent_cos">腾讯云 COS</option>
+                            </select>
+                            <select id="cloud-file-status-filter" class="filter-select" lay-ignore>
+                                <option value="active">正常文件</option>
+                                <option value="">全部状态</option>
+                                <option value="deleted">已删除</option>
+                                <option value="failed">上传失败</option>
+                            </select>
+                        </div>
+                        <div class="table-wrap fixed-table">
+                            <table class="layui-table modern-table" lay-size="sm">
+                                <thead><tr><th>文件</th><th>大小</th><th>来源</th><th>文件 Key</th><th>上传时间</th><th>状态</th><th>操作</th></tr></thead>
+                                <tbody id="cloud-files-table"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <section class="view-panel" data-panel="authorization">
+                <div id="auth-app-tabs" class="auth-app-tabs surface-panel"></div>
+
+                <div class="auth-context surface-panel">
+                    <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="back-apps"><i class="layui-icon layui-icon-left"></i>返回应用</button>
+                    <div class="breadcrumb">
+                        <span>应用管理</span>
+                        <i>/</i>
+                        <strong id="auth-app-name">未选择应用</strong>
+                        <em id="auth-app-code"></em>
+                    </div>
+                    <div class="row-actions">
+                        <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="refresh-auth">刷新当前应用</button>
+                    </div>
+                </div>
+
+                <div class="auth-subnav surface-panel">
+                    <button type="button" class="layui-this" data-auth-view="cards"><i class="layui-icon layui-icon-template"></i><span>卡密与设备</span></button>
+                    <button type="button" data-auth-view="appConfig"><i class="layui-icon layui-icon-set"></i><span>应用配置</span></button>
+                    <button type="button" data-auth-view="integration"><i class="layui-icon layui-icon-release"></i><span>接入文档</span></button>
+                    <button type="button" data-auth-view="messages"><i class="layui-icon layui-icon-dialogue"></i><span>消息</span></button>
+                </div>
+
+                <div class="auth-section auth-show" data-auth-section="cards">
+                    <section class="surface-panel card-table-panel">
+                        <div class="section-header">
+                            <div class="panel-title compact">
+                                <h2>卡密与设备</h2>
+                            </div>
+                            <div class="row-actions">
+                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm" data-action="open-card-modal"><i class="layui-icon layui-icon-add-circle"></i>生成卡密</button>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="open-card-import-modal"><i class="layui-icon layui-icon-upload"></i>导入卡密</button>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="open-card-range-operation">范围操作</button>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="open-card-batch-actions">批量操作</button>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="export-current-cards">导出卡密</button>
+                            </div>
+                        </div>
+                        <div class="toolbar-row">
+                            <label class="search-field"><i class="layui-icon layui-icon-search"></i><input id="card-search" name="card_search" type="search" placeholder="搜索卡密 ID 或指纹" autocomplete="off"></label>
+                            <select id="card-status-filter" class="filter-select" lay-ignore>
+                                <option value="">全部状态</option>
+                                <option value="0">未激活</option>
+                                <option value="1">已激活</option>
+                                <option value="active">已激活(未过期)</option>
+                                <option value="2">已禁用</option>
+                                <option value="expired">已过期</option>
+                            </select>
+                            <select id="card-duration-filter" class="filter-select" lay-ignore>
+                                <option value="">全部时长</option>
+                                <option value="day">天卡</option>
+                                <option value="week">周卡</option>
+                                <option value="month">月卡</option>
+                                <option value="season">季卡</option>
+                                <option value="year">年卡</option>
+                                <option value="custom">自定义</option>
+                            </select>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="load-cards">刷新卡密</button>
+                        </div>
+                        <div class="selection-line">
+                            <label><input type="checkbox" name="select_all_cards" data-action="toggle-card-selection"> 全选当前卡密</label>
+                            <div class="selection-actions">
+                                <button type="button" class="text-button" data-action="select-expired-cards">全选过期</button>
+                                <button type="button" class="text-button" data-action="select-active-cards">全选已激活(未过期)</button>
+                                <button type="button" class="text-button" data-action="select-inactive-cards">全选未激活</button>
+                            </div>
+                        </div>
+                        <div class="table-wrap fixed-table">
+                            <table class="layui-table modern-table" lay-size="sm">
+                                <thead><tr><th class="check-cell"></th><th>卡密</th><th>类型</th><th>时长</th><th>状态</th><th>剩余</th><th>设备占用</th><th>在线</th><th>最近登录</th><th>操作</th></tr></thead>
+                                <tbody id="cards-table"></tbody>
+                            </table>
+                        </div>
+                        <div class="table-pager">
+                            <label><span>每页</span><select id="card-page-size" class="filter-select compact-select" lay-ignore><option value="20">20 张</option><option value="50">50 张</option><option value="100">100 张</option></select></label>
+                            <div class="pager-actions">
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="card-prev-page">上一页</button>
+                                <span id="card-page-info">第 1 页 / 共 1 页 · 0 张</span>
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="card-next-page">下一页</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="auth-section" data-auth-section="appConfig">
+                    <div class="app-config-shell">
+                        <aside class="surface-panel app-config-nav">
+                            <div class="panel-title compact">
+                                <h2>应用配置</h2>
+                            </div>
+                            <div class="app-config-tabs">
+                                <button type="button" class="app-config-tab is-active" data-app-config-view="settings">
+                                    <strong>基础设置</strong>
+                                </button>
+                                <button type="button" class="app-config-tab" data-app-config-view="remote">
+                                    <strong>版本与公告</strong>
+                                </button>
+                                <button type="button" class="app-config-tab" data-app-config-view="api">
+                                    <strong>接口控制</strong>
+                                </button>
+                                <button type="button" class="app-config-tab" data-app-config-view="operations">
+                                    <strong>应用操作</strong>
+                                </button>
+                            </div>
+                        </aside>
+
+                        <div class="app-config-content">
+                            <section class="surface-panel app-config-pane app-config-pane-show" data-app-config-section="settings">
+                                <div class="section-header">
+                                    <div class="panel-title compact">
+                                        <h2>基础设置</h2>
+                                    </div>
+                                </div>
+                                <div id="app-settings-meta" class="hint-box card-action-meta"></div>
+                                <form id="app-settings-form" class="layui-form config-form">
+                                    <input name="app_id" type="hidden">
+                                    <div class="config-meta">
+                                        <label><span>应用名称</span><input name="name" class="layui-input" autocomplete="off" maxlength="80" required></label>
+                                        <label><span>Token 过期秒数</span><input name="session_ttl_seconds" type="number" min="300" max="315360000" class="layui-input" autocomplete="off" required></label>
+                                        <label><span>客户端加密</span><select name="client_crypto_alg" class="layui-input" lay-ignore><option value="rsa_oaep_aes_256_gcm">RSA-OAEP + AES-256-GCM</option><option value="rsa_oaep_aes_128_gcm">RSA-OAEP + AES-128-GCM</option><option value="rsa_pkcs1_aes_256_gcm">RSA-PKCS1 + AES-256-GCM</option></select></label>
+                                        <label><span>心跳续期</span><select name="heartbeat_enabled" class="layui-input" lay-ignore><option value="1">启用</option><option value="0">关闭</option></select></label>
+                                        <label><span>卡密验证</span><select name="verification_enabled" class="layui-input" lay-ignore><option value="1">开启验证</option><option value="0">任意卡密</option></select></label>
+                                        <label><span>设备绑定</span><select name="device_binding_enabled" class="layui-input" lay-ignore><option value="1">绑定设备</option><option value="0">不绑定</option></select></label>
+                                        <label><span>登录限制</span><select name="shared_cards_enabled" class="layui-input" lay-ignore><option value="0">单人使用</option><option value="1">允许多人登录</option></select></label>
+                                        <label><span>IP 绑定</span><select name="login_ip_binding_enabled" class="layui-input" lay-ignore><option value="0">不绑定 IP</option><option value="1">绑定首次地区</option></select></label>
+                                    </div>
+                                    <label><span>备注</span><textarea name="remark" class="layui-textarea" rows="4" spellcheck="false" maxlength="255"></textarea></label>
+                                    <div class="config-actions">
+                                        <button type="submit" class="layui-btn layui-btn-normal">保存应用设置</button>
+                                    </div>
+                                </form>
+                            </section>
+
+                            <section class="surface-panel app-config-pane" data-app-config-section="remote">
+                                <div class="section-header">
+                                    <div class="panel-title compact">
+                                        <h2>版本与公告</h2>
+                                    </div>
+                                </div>
+                                <form id="config-form" class="layui-form config-form">
+                                    <div class="config-meta">
+                                        <label><span>版本号</span><input name="version" class="layui-input" autocomplete="off"></label>
+                                        <label><span>更新地址</span><input name="download_url" class="layui-input" autocomplete="off"></label>
+                                        <label class="config-checkbox"><input name="force_update" type="checkbox" lay-ignore><span>是否强制更新</span></label>
+                                    </div>
+                                    <label><span>应用公告</span><textarea name="notice" class="layui-textarea" rows="5" spellcheck="false" placeholder="客户端公告只保留这一份"></textarea></label>
+                                    <div class="config-actions">
+                                        <button type="submit" class="layui-btn layui-btn-normal">保存远程配置</button>
+                                    </div>
+                                </form>
+                            </section>
+
+                            <section class="surface-panel app-config-pane" data-app-config-section="api">
+                                <div class="section-header">
+                                    <div class="panel-title compact">
+                                        <h2>接口控制</h2>
+                                    </div>
+                                </div>
+                                <form id="app-api-form" class="layui-form config-form">
+                                    <input name="app_id" type="hidden">
+                                    <div class="config-meta">
+                                        <label><span>请求 Token</span><input name="api_token" class="layui-input" autocomplete="off" maxlength="64" required></label>
+                                        <label><span>成功状态码</span><input name="api_success_code" type="number" min="0" max="999999" class="layui-input" autocomplete="off" required></label>
+                                        <label><span>网页卡密查询</span><select name="web_card_query_enabled" class="layui-input" lay-ignore><option value="0">关闭</option><option value="1">开启</option></select></label>
+                                        <label><span>解绑冷却秒数</span><input name="unbind_interval_seconds" type="number" min="0" max="315360000" class="layui-input" autocomplete="off"></label>
+                                        <label><span>解绑扣时秒数</span><input name="unbind_deduct_seconds" type="number" min="0" max="315360000" class="layui-input" autocomplete="off"></label>
+                                        <label><span>解绑扣次数</span><input name="unbind_deduct_uses" type="number" min="0" max="1000000" class="layui-input" autocomplete="off"></label>
+                                    </div>
+                                    <div id="app-api-routes" class="api-route-list"></div>
+                                    <div class="config-actions">
+                                        <button type="submit" class="layui-btn layui-btn-normal">保存接口控制</button>
+                                    </div>
+                                </form>
+                            </section>
+
+                            <section class="surface-panel app-config-pane" data-app-config-section="operations">
+                                <div class="section-header">
+                                    <div class="panel-title compact">
+                                        <h2>应用操作</h2>
+                                    </div>
+                                </div>
+                                <div id="app-operations-meta" class="hint-box card-action-meta"></div>
+                                <div class="app-operations-content">
+                                    <div class="option-modal-grid">
+                                        <button type="button" class="option-modal-button is-secondary" data-action="open-integration-section">接入 / SDK</button>
+                                        <button type="button" class="option-modal-button is-secondary" data-action="generate-current-app-keypair">重新生成密钥对</button>
+                                        <button type="button" class="option-modal-button is-danger" data-action="delete-current-app">删除应用</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="auth-section" data-auth-section="integration">
+                    <section class="surface-panel">
+                        <div class="section-header">
+                            <div class="panel-title compact">
+                                <h2>接入文档</h2>
+                            </div>
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="load-app-integration">刷新文档</button>
+                        </div>
+                        <div id="app-integration-docs" class="integration-docs"></div>
+                    </section>
+                </div>
+
+                <div class="auth-section" data-auth-section="messages">
+                    <section class="surface-panel">
+                        <div class="section-header">
+                            <div class="panel-title compact">
+                                <h2>消息</h2>
+                            </div>
+                            <div class="section-actions">
+                                <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="load-messages">刷新消息</button>
+                                <button type="button" class="layui-btn layui-btn-danger layui-btn-sm" data-action="clear-app-activity">清空活动与消息</button>
+                            </div>
+                        </div>
+                        <div id="message-summary" class="message-summary-grid"></div>
+                        <div class="toolbar-row">
+                            <select id="message-range-filter" class="filter-select" lay-ignore>
+                                <option value="">全部时间</option>
+                                <option value="today">今天</option>
+                                <option value="7">最近 7 天</option>
+                                <option value="30">最近 30 天</option>
+                                <option value="custom">自定义</option>
+                            </select>
+                            <input id="message-start-date" class="layui-input compact-date" type="date" hidden>
+                            <input id="message-end-date" class="layui-input compact-date" type="date" hidden>
+                            <select id="message-status-filter" class="filter-select" lay-ignore>
+                                <option value="">全部状态</option>
+                                <option value="unread">未读</option>
+                                <option value="read">已读</option>
+                                <option value="handling">处理中</option>
+                                <option value="handled">已处理</option>
+                                <option value="archived">已归档</option>
+                            </select>
+                            <select id="message-risk-filter" class="filter-select" lay-ignore>
+                                <option value="">全部风险</option>
+                                <option value="critical">严重</option>
+                                <option value="high">高危</option>
+                                <option value="medium">中危</option>
+                                <option value="low">低危</option>
+                            </select>
+                            <select id="message-action-filter" class="filter-select" lay-ignore>
+                                <option value="">全部处置</option>
+                                <option value="record_only">只记录</option>
+                                <option value="manual_review">人工复核</option>
+                                <option value="kick_session">踢下线</option>
+                                <option value="disable_device">封禁设备</option>
+                                <option value="disable_card">封禁卡密</option>
+                            </select>
+                            <select id="message-event-filter" class="filter-select" lay-ignore>
+                                <option value="">全部事件</option>
+                                <option value="debugger_detected">调试器</option>
+                                <option value="tracer_detected">进程跟踪</option>
+                                <option value="hook_detected">Hook</option>
+                                <option value="instrumentation_detected">插桩</option>
+                                <option value="module_tampered">模块篡改</option>
+                                <option value="signature_mismatch">签名异常</option>
+                                <option value="emulator_detected">模拟器</option>
+                                <option value="root_detected">Root</option>
+                                <option value="attestation_failed">完整性失败</option>
+                                <option value="policy_violation">策略违规</option>
+                            </select>
+                            <input id="message-card-filter" class="layui-input compact-input" type="search" placeholder="卡密指纹">
+                            <input id="message-install-filter" class="layui-input compact-input" type="search" placeholder="安装实例">
+                            <input id="message-ip-filter" class="layui-input compact-input" type="search" placeholder="IP">
+                        </div>
+                        <div class="table-wrap fixed-table message-wrap">
+                            <table class="layui-table modern-table" lay-size="sm">
+                                <thead><tr><th class="check-cell"><input type="checkbox" name="select_all_messages" data-action="toggle-message-selection"></th><th>ID</th><th>风险</th><th>事件</th><th>处置</th><th>状态</th><th>消息</th><th>来源</th><th>时间</th><th>操作</th></tr></thead>
+                                <tbody id="messages-table"></tbody>
+                            </table>
+                        </div>
+                    </section>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="app-batch-bar" class="batch-bar" hidden><span>已选择 <strong>0</strong> 个应用</span><button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="open-app-batch-actions">批量操作</button></div>
+    <div id="card-batch-bar" class="batch-bar" hidden><span>已选择 <strong>0</strong> 张卡密</span><button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="open-card-batch-actions">批量操作</button></div>
+    <div id="message-batch-bar" class="batch-bar" hidden><span>已选择 <strong>0</strong> 条消息</span><button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="batch-read-messages">批量已读</button><button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="batch-handling-messages">批量处理中</button><button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="batch-handle-messages">批量处理</button><button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="batch-archive-messages">批量归档</button></div>
+    <div id="variable-batch-bar" class="batch-bar" hidden><span>已选择 <strong>0</strong> 个变量</span><button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="open-variable-batch-actions">批量操作</button></div>
+
+    <div id="mobile-mask" class="mobile-mask"></div>
+
+</div>
+<template id="app-modal-template">
+    <div id="app-modal" class="app-modal auth-modal">
+        <div class="app-modal-panel auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="app-modal-title">
+            <div class="app-modal-header auth-modal-header">
+                <strong id="app-modal-title">添加应用</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="app-modal" aria-label="关闭">&times;</button>
+            </div>
+            <form id="app-form" class="layui-form app-modal-form">
+                <label><span>应用名称</span><input name="name" class="layui-input" autocomplete="off" required></label>
+                <label><span>客户端加密</span><select name="client_crypto_alg" class="layui-input" lay-ignore><option value="rsa_oaep_aes_256_gcm">RSA-OAEP + AES-256-GCM</option><option value="rsa_oaep_aes_128_gcm">RSA-OAEP + AES-128-GCM</option><option value="rsa_pkcs1_aes_256_gcm">RSA-PKCS1 + AES-256-GCM</option></select></label>
+                <label><span>备注</span><input name="remark" class="layui-input" autocomplete="off"></label>
+                <div class="modal-actions">
+                    <button type="button" class="layui-btn layui-btn-primary" data-action="close-modal" data-modal="app-modal">取消</button>
+                    <button type="submit" class="layui-btn layui-btn-normal">保存应用</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+<template id="remote-api-token-modal-template">
+    <div id="remote-api-token-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="remote-api-token-modal-title">
+            <div class="auth-modal-header">
+                <strong id="remote-api-token-modal-title">创建远程 API Token</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="remote-api-token-modal" aria-label="关闭">&times;</button>
+            </div>
+            <form id="remote-api-token-form" class="layui-form modal-form remote-api-token-form">
+                <label><span>Token 名称</span><input name="name" class="layui-input" autocomplete="off" maxlength="80" placeholder="例如：CI 发布脚本" required></label>
+                <label><span>过期时间</span><input name="expires_at" type="datetime-local" class="layui-input" autocomplete="off"></label>
+                <label class="modal-wide-field"><span>IP 白名单</span><input name="ip_allowlist" class="layui-input" autocomplete="off" placeholder="留空不限制，支持逗号分隔"></label>
+                <div class="modal-actions">
+                    <button type="button" class="layui-btn layui-btn-primary" data-action="close-modal" data-modal="remote-api-token-modal">取消</button>
+                    <button type="submit" class="layui-btn layui-btn-normal">创建 Token</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+<template id="remote-api-log-detail-modal-template">
+    <div id="remote-api-log-detail-modal" class="auth-modal">
+        <div class="auth-modal-panel result-modal-panel" role="dialog" aria-modal="true" aria-labelledby="remote-api-log-detail-title">
+            <div class="auth-modal-header">
+                <strong id="remote-api-log-detail-title">调用日志详情</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="remote-api-log-detail-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div id="remote-api-log-detail-body" class="modal-content log-detail-grid"></div>
+        </div>
+    </div>
+</template>
+<template id="cloud-config-modal-template">
+    <div id="cloud-config-modal" class="auth-modal">
+        <div class="auth-modal-panel result-modal-panel" role="dialog" aria-modal="true" aria-labelledby="cloud-config-title">
+            <div class="auth-modal-header">
+                <strong id="cloud-config-title">存储配置</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="cloud-config-modal" aria-label="关闭">&times;</button>
+            </div>
+            <form id="cloud-storage-config-form" class="layui-form modal-form cloud-storage-config-form">
+                <div class="settings-grid">
+                    <label><span>存储类型</span><select name="provider" class="layui-input" lay-ignore><option value="local">服务器本地</option><option value="aliyun_oss">阿里云 OSS</option><option value="tencent_cos">腾讯云 COS</option></select></label>
+                    <label><span>状态</span><select name="status" class="layui-input" lay-ignore><option value="1">启用</option><option value="0">禁用</option></select></label>
+                    <label><span>单文件上限</span><div class="unit-input-group"><input name="max_file_size_value" type="number" min="1" max="10240" class="layui-input" autocomplete="off" required><select name="max_file_size_unit" class="layui-input" lay-ignore><option value="kb">KB</option><option value="mb" selected>MB</option><option value="gb">GB</option></select><input name="max_file_size" type="hidden"></div></label>
+                    <label data-cloud-provider-field="remote"><span>短签有效期</span><div class="unit-input-group"><input name="signed_url_ttl_value" type="number" min="1" max="86400" class="layui-input" autocomplete="off" required><select name="signed_url_ttl_unit" class="layui-input" lay-ignore><option value="second">秒</option><option value="minute" selected>分钟</option><option value="hour">小时</option></select><input name="signed_url_ttl_seconds" type="hidden"></div></label>
+                    <label data-cloud-provider-field="remote"><span>Bucket</span><input name="bucket" class="layui-input" autocomplete="off"></label>
+                    <label data-cloud-provider-field="remote"><span>Region</span><input name="region" class="layui-input" autocomplete="off"></label>
+                    <label data-cloud-provider-field="remote"><span>Endpoint</span><input name="endpoint" class="layui-input" autocomplete="off"></label>
+                    <label data-cloud-provider-field="remote"><span>AccessKey / SecretId</span><input name="access_key" class="layui-input" autocomplete="off"></label>
+                    <label data-cloud-provider-field="remote"><span>Secret</span><input name="secret" type="password" class="layui-input" autocomplete="new-password" placeholder="留空不修改已保存 Secret"></label>
+                    <label data-cloud-provider-field="remote"><span>Path Prefix</span><input name="path_prefix" class="layui-input" autocomplete="off" placeholder="例如 releases/app"></label>
+                    <label data-cloud-provider-field="remote"><span>自定义域名</span><input name="custom_domain" class="layui-input" autocomplete="off"></label>
+                    <label><span>允许扩展名</span><input name="allowed_extensions" class="layui-input" autocomplete="off" placeholder="留空不限制，多个用逗号"></label>
+                </div>
+                <label class="config-check-line"><input name="set_default" type="checkbox" value="1"> 保存后设为默认存储</label>
+                <div id="cloud-config-state" class="cloud-config-state"></div>
+                <div class="modal-actions">
+                    <button type="button" class="layui-btn layui-btn-primary" data-action="test-cloud-config">测试连接</button>
+                    <button type="submit" class="layui-btn layui-btn-normal">保存配置</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+<template id="cloud-upload-modal-template">
+    <div id="cloud-upload-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="cloud-upload-title">
+            <div class="auth-modal-header">
+                <strong id="cloud-upload-title">上传文件</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="cloud-upload-modal" aria-label="关闭">&times;</button>
+            </div>
+            <form id="cloud-upload-form" class="layui-form modal-form">
+                <div id="cloud-upload-target" class="cloud-upload-target"></div>
+                <label class="modal-wide-field"><span>选择文件</span><input id="cloud-upload-file" name="file" type="file" class="layui-input" required></label>
+                <label class="modal-wide-field"><span>备注</span><input name="remark" class="layui-input" autocomplete="off" maxlength="255"></label>
+                <div id="cloud-upload-hash" class="cloud-upload-hash">等待选择文件</div>
+                <div class="modal-actions">
+                    <button type="button" class="layui-btn layui-btn-primary" data-action="close-modal" data-modal="cloud-upload-modal">取消</button>
+                    <button type="submit" class="layui-btn layui-btn-normal">开始上传</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+<template id="cloud-token-modal-template">
+    <div id="cloud-token-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="cloud-token-title">
+            <div class="auth-modal-header">
+                <strong id="cloud-token-title">下载 Token 管理</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="cloud-token-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div id="cloud-token-state" class="cloud-token-state"></div>
+                <div class="secret-box"><code id="cloud-download-token-text"></code><button type="button" class="layui-btn layui-btn-primary layui-btn-xs" data-action="copy-cloud-download-token">复制</button></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-primary" data-action="refresh-cloud-download-token">刷新 Token</button>
+                <button type="button" class="layui-btn layui-btn-primary" data-action="set-cloud-token-status" data-status="1">启用</button>
+                <button type="button" class="layui-btn layui-btn-danger" data-action="set-cloud-token-status" data-status="0">禁用</button>
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="cloud-token-modal">完成</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="cloud-file-detail-modal-template">
+    <div id="cloud-file-detail-modal" class="auth-modal">
+        <div class="auth-modal-panel result-modal-panel" role="dialog" aria-modal="true" aria-labelledby="cloud-file-detail-title">
+            <div class="auth-modal-header">
+                <strong id="cloud-file-detail-title">文件详情</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="cloud-file-detail-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div id="cloud-file-detail-body" class="modal-content log-detail-grid"></div>
+        </div>
+    </div>
+</template>
+<template id="app-secret-modal-template">
+    <div id="app-secret-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="app-secret-title">
+            <div class="auth-modal-header">
+                <strong id="app-secret-title">应用信息</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="app-secret-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div class="secret-box">
+                    <span id="app-secret-label">一次性凭据：</span>
+                    <code id="app-secret"></code>
+                </div>
+                <label><span>请求加密公钥</span><textarea id="app-public-key" class="layui-textarea" readonly spellcheck="false"></textarea></label>
+            </div>
+            <div class="modal-actions">
+                <button id="copy-secret-button" type="button" class="layui-btn layui-btn-primary" data-action="copy-secret">复制内容</button>
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="app-secret-modal">完成</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="sdk-download-modal-template">
+    <div id="sdk-download-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="sdk-download-title">
+            <div class="auth-modal-header">
+                <strong id="sdk-download-title">下载 SDK</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="sdk-download-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div id="sdk-download-meta" class="hint-box card-action-meta"></div>
+                <label class="modal-field"><span>SDK 类型</span><select id="sdk-type-select" class="layui-input" lay-ignore><option value="windows">Windows SDK</option><option value="android">Android SDK</option><option value="macos">macOS SDK</option><option value="linux">Linux SDK</option><option value="python">Python SDK</option></select></label>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-normal" data-action="download-selected-sdk">下载 SDK</button>
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="sdk-download-modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="app-batch-modal-template">
+    <div id="app-batch-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="app-batch-title">
+            <div class="auth-modal-header">
+                <strong id="app-batch-title">批量应用操作</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="app-batch-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div id="app-batch-meta" class="hint-box card-action-meta"></div>
+                <div id="app-batch-list" class="option-modal-grid"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="app-batch-modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="card-batch-modal-template">
+    <div id="card-batch-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="card-batch-title">
+            <div class="auth-modal-header">
+                <strong id="card-batch-title">批量卡密操作</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="card-batch-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div id="card-batch-meta" class="hint-box card-action-meta"></div>
+                <div id="card-batch-list" class="option-modal-grid"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="card-batch-modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="card-range-modal-template">
+    <div id="card-range-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="card-range-title">
+            <div class="auth-modal-header">
+                <strong id="card-range-title">按激活日期范围操作</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="card-range-modal" aria-label="关闭">&times;</button>
+            </div>
+            <form id="card-range-form" class="layui-form modal-form">
+                <label><span>操作类型</span><select name="operation" class="layui-input" lay-ignore><option value="reset_duration">重置为未激活计时</option><option value="add_duration">增加时长</option><option value="reduce_duration">扣减时长</option><option value="enable">启用卡密</option><option value="disable">禁用卡密</option><option value="reset_uses">重置次数卡</option><option value="delete">删除卡密</option></select></label>
+                <label><span>激活开始日期</span><input name="activated_start" type="date" class="layui-input" autocomplete="off" required></label>
+                <label><span>激活结束日期</span><input name="activated_end" type="date" class="layui-input" autocomplete="off" required></label>
+                <label id="card-range-duration-field"><span id="card-range-duration-label">目标时长</span><div class="duration-input-group" data-duration-control><input name="duration_value" type="number" min="1" max="3650" value="1" class="layui-input" autocomplete="off" required><select name="duration_unit" class="layui-input" lay-ignore><option value="hour">小时</option><option value="day" selected>天</option><option value="month">月</option></select></div></label>
+                <div class="modal-actions">
+                    <button type="button" class="layui-btn layui-btn-primary" data-action="close-modal" data-modal="card-range-modal">取消</button>
+                    <button type="submit" class="layui-btn layui-btn-normal">确认执行</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+<template id="card-action-modal-template">
+    <div id="card-action-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="card-action-title">
+            <div class="auth-modal-header">
+                <strong id="card-action-title">卡密操作</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="card-action-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div id="card-action-meta" class="hint-box card-action-meta"></div>
+                <div id="card-action-list" class="option-modal-grid"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="card-action-modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="card-devices-modal-template">
+    <div id="card-devices-modal" class="auth-modal">
+        <div class="auth-modal-panel result-modal-panel card-devices-modal-panel" role="dialog" aria-modal="true" aria-labelledby="selected-card-modal-title">
+            <div class="auth-modal-header">
+                <strong id="selected-card-modal-title">设备详情</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="card-devices-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content card-detail-modal-content">
+                <div id="selected-card-empty" class="card-detail-empty">
+                    <div class="empty-state anime-empty">
+                <img class="mascot-img empty-illustration" src="../../frontend/admin-console/js/img/device-management.webp" alt="" loading="lazy" data-mascot-breath data-mascot-breath-amplitude="2" data-mascot-breath-period="8800">
+                        <i class="layui-icon layui-icon-auz"></i>
+                        <strong class="empty-title">未选择卡密</strong>
+                    </div>
+                </div>
+                <div id="selected-card-content" class="card-detail-content" hidden>
+                    <div class="card-detail-head">
+                        <div class="card-detail-title">
+                            <strong id="selected-card-fingerprint">-</strong>
+                            <span id="selected-card-created">-</span>
+                        </div>
+                        <div class="row-actions">
+                            <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="selected-card-actions">卡密操作</button>
+                        </div>
+                    </div>
+                    <div class="card-detail-stats">
+                        <div class="account-status-item">
+                            <span>状态</span>
+                            <strong id="selected-card-status">-</strong>
+                            <em id="selected-card-remaining">-</em>
+                        </div>
+                        <div class="account-status-item">
+                            <span>设备占用</span>
+                            <strong id="selected-card-devices-usage">-</strong>
+                            <em id="selected-card-online">-</em>
+                        </div>
+                        <div class="account-status-item">
+                            <span>最近登录</span>
+                            <strong id="selected-card-ips">-</strong>
+                            <em id="selected-card-used-at">-</em>
+                        </div>
+                    </div>
+                    <div class="toolbar-row card-device-toolbar">
+                        <label class="search-field"><i class="layui-icon layui-icon-search"></i><input id="device-search" name="device_search" type="search" placeholder="只搜索当前卡密的设备" autocomplete="off"></label>
+                        <select id="device-status-filter" class="filter-select" lay-ignore>
+                            <option value="">全部状态</option>
+                            <option value="1">启用</option>
+                            <option value="0">停用</option>
+                        </select>
+                        <button type="button" class="layui-btn layui-btn-primary layui-btn-sm" data-action="reload-selected-card-devices">刷新设备</button>
+                    </div>
+                    <div id="selected-card-devices" class="card-device-list"></div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="card-devices-modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="variable-modal-template">
+    <div id="variable-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="variable-modal-title">
+            <div class="auth-modal-header">
+                <strong id="variable-modal-title">添加变量</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="variable-modal" aria-label="关闭">&times;</button>
+            </div>
+            <form id="variable-form" class="layui-form modal-form">
+                <input type="hidden" name="variable_id">
+                <label><span>变量名</span><input name="name" class="layui-input" autocomplete="off" maxlength="80" required></label>
+                <label><span>作用域</span><select id="variable-scope" name="scope" class="layui-input" lay-ignore><option value="public">公共变量</option><option value="private">私有变量</option></select></label>
+                <label id="variable-app-field" class="modal-wide-field"><span>授权应用</span><div class="variable-app-picker"><div id="variable-app-selected" class="variable-app-selected"></div><input id="variable-app-search" class="layui-input" type="search" autocomplete="off" placeholder="输入应用名称或编号过滤"><div id="variable-app-options" class="variable-app-options" role="listbox"></div></div></label>
+                <label><span>变量值</span><textarea name="value" class="layui-textarea" rows="8" spellcheck="false"></textarea></label>
+                <label class="check-line"><input name="status" type="checkbox" checked><span>启用变量</span></label>
+                <div class="modal-actions">
+                    <button type="button" class="layui-btn layui-btn-primary" data-action="close-modal" data-modal="variable-modal">取消</button>
+                    <button type="submit" class="layui-btn layui-btn-normal">保存变量</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+<template id="variable-batch-modal-template">
+    <div id="variable-batch-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="variable-batch-title">
+            <div class="auth-modal-header">
+                <strong id="variable-batch-title">批量变量操作</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="variable-batch-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div id="variable-batch-meta" class="hint-box card-action-meta"></div>
+                <div id="variable-batch-list" class="option-modal-grid"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="variable-batch-modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="variable-action-modal-template">
+    <div id="variable-action-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="variable-action-title">
+            <div class="auth-modal-header">
+                <strong id="variable-action-title">变量操作</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="variable-action-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <div id="variable-action-meta" class="hint-box card-action-meta"></div>
+                <div id="variable-action-list" class="option-modal-grid"></div>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="variable-action-modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="message-detail-modal-template">
+    <div id="message-detail-modal" class="auth-modal">
+        <div class="auth-modal-panel result-modal-panel" role="dialog" aria-modal="true" aria-labelledby="message-detail-title">
+            <div class="auth-modal-header">
+                <strong id="message-detail-title">消息详情</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="message-detail-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <pre id="message-detail-body" class="message-body"></pre>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="message-detail-modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="card-modal-template">
+    <div id="card-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="card-modal-title">
+            <div class="auth-modal-header">
+                <strong id="card-modal-title">生成卡密</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="card-modal" aria-label="关闭">&times;</button>
+            </div>
+            <form id="card-form" class="layui-form modal-form" data-card-rule-form>
+                <label><span>卡密类型</span><select name="card_type" class="layui-input" lay-ignore><option value="time">时长卡</option><option value="count">次数卡</option><option value="permanent">永久卡</option></select></label>
+                <label><span>数量</span><input name="count" type="number" min="1" max="500" value="10" class="layui-input" autocomplete="off" required></label>
+                <label data-card-field="duration"><span>有效时长</span><div class="duration-input-group" data-duration-control><input name="duration_value" type="number" min="1" max="3650" value="1" class="layui-input" autocomplete="off" required><select name="duration_unit" class="layui-input" lay-ignore><option value="hour">小时</option><option value="day" selected>天</option><option value="month">月</option></select></div></label>
+                <label data-card-field="uses" hidden><span>可用次数</span><input name="total_uses" type="number" min="1" max="1000000" value="1" class="layui-input" autocomplete="off"></label>
+                <label data-card-field="devices"><span>设备上限</span><input name="max_devices" type="number" min="1" max="50" value="50" class="layui-input" autocomplete="off" required></label>
+                <label><span>结构</span><select name="card_structure" class="layui-input" lay-ignore><option value="hex">十六进制</option><option value="alnum">字母数字</option></select></label>
+                <label><span>长度</span><input name="card_length" type="number" min="8" max="64" value="24" class="layui-input" autocomplete="off"></label>
+                <label><span>前缀</span><input name="prefix" class="layui-input" autocomplete="off"></label>
+                <label data-card-field="unbind"><span>解绑次数</span><input name="unbind_limit" type="number" min="0" max="1000000" value="0" class="layui-input" autocomplete="off"></label>
+                <div class="modal-actions">
+                    <button type="button" class="layui-btn layui-btn-primary" data-action="close-modal" data-modal="card-modal">取消</button>
+                    <button type="submit" class="layui-btn layui-btn-normal">生成卡密</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+<template id="card-import-modal-template">
+    <div id="card-import-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="card-import-modal-title">
+            <div class="auth-modal-header">
+                <strong id="card-import-modal-title">导入卡密</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="card-import-modal" aria-label="关闭">&times;</button>
+            </div>
+            <form id="card-import-form" class="layui-form modal-form" data-card-rule-form>
+                <label><span>卡密类型</span><select name="card_type" class="layui-input" lay-ignore><option value="time">时长卡</option><option value="count">次数卡</option><option value="permanent">永久卡</option></select></label>
+                <label data-card-field="duration"><span>有效时长</span><div class="duration-input-group" data-duration-control><input name="duration_value" type="number" min="1" max="3650" value="1" class="layui-input" autocomplete="off" required><select name="duration_unit" class="layui-input" lay-ignore><option value="hour">小时</option><option value="day" selected>天</option><option value="month">月</option></select></div></label>
+                <label data-card-field="uses" hidden><span>可用次数</span><input name="total_uses" type="number" min="1" max="1000000" value="1" class="layui-input" autocomplete="off"></label>
+                <label data-card-field="devices"><span>设备上限</span><input name="max_devices" type="number" min="1" max="50" value="50" class="layui-input" autocomplete="off" required></label>
+                <label data-card-field="unbind"><span>解绑次数</span><input name="unbind_limit" type="number" min="0" max="1000000" value="0" class="layui-input" autocomplete="off"></label>
+                <label class="modal-wide-field custom-card-import-field"><span>导入内容</span><textarea name="custom_cards" class="layui-textarea" rows="8" spellcheck="false" placeholder="支持换行、空格、逗号、分号分隔，一次最多 500 张"></textarea><div id="custom-card-import-summary" class="custom-card-import-summary" aria-live="polite"><span class="import-count-main">可导入 0 / 500 张</span><span>请粘贴要导入的卡密</span></div></label>
+                <div class="modal-actions">
+                    <button type="button" class="layui-btn layui-btn-primary" data-action="close-modal" data-modal="card-import-modal">取消</button>
+                    <button type="submit" class="layui-btn layui-btn-normal">导入卡密</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+<template id="card-result-modal-template">
+    <div id="card-result-modal" class="auth-modal">
+        <div class="auth-modal-panel result-modal-panel" role="dialog" aria-modal="true" aria-labelledby="card-result-title">
+            <div class="auth-modal-header">
+                <strong id="card-result-title">生成结果</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="card-result-modal" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content">
+                <textarea id="cards-output" class="layui-textarea cards-output" readonly spellcheck="false"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="layui-btn layui-btn-primary" data-action="copy-cards">复制全部</button>
+                <button type="button" class="layui-btn layui-btn-primary" data-action="export-cards">导出 TXT</button>
+                <button type="button" class="layui-btn layui-btn-normal" data-action="close-modal" data-modal="card-result-modal">完成</button>
+            </div>
+        </div>
+    </div>
+</template>
+<template id="time-modal-template">
+    <div id="time-modal" class="auth-modal">
+        <div class="auth-modal-panel" role="dialog" aria-modal="true" aria-labelledby="time-modal-title">
+            <div class="auth-modal-header">
+                <strong id="time-modal-title">调整卡密时长</strong>
+                <button type="button" class="modal-close" data-action="close-modal" data-modal="time-modal" aria-label="关闭">&times;</button>
+            </div>
+            <form id="time-form" class="layui-form modal-form">
+                <input type="hidden" name="card_id">
+                <input type="hidden" name="card_ids">
+                <input type="hidden" name="direction">
+                <label><span id="time-duration-label">调整时长</span><div class="duration-input-group" data-duration-control><input name="duration_value" type="number" min="1" max="3650" value="1" class="layui-input" autocomplete="off" required><select name="duration_unit" class="layui-input" lay-ignore><option value="hour">小时</option><option value="day" selected>天</option><option value="month">月</option></select></div></label>
+                <div class="modal-actions">
+                    <button type="button" class="layui-btn layui-btn-primary" data-action="close-modal" data-modal="time-modal">取消</button>
+                    <button type="submit" class="layui-btn layui-btn-normal" id="time-submit-button">确认调整</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</template>
+<template id="confirm-modal-template">
+    <div id="confirm-modal" class="auth-modal">
+        <div class="auth-modal-panel confirm-panel" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+            <div class="auth-modal-header">
+                <strong id="confirm-title">确认操作</strong>
+                <button type="button" class="modal-close" data-action="confirm-no" aria-label="关闭">&times;</button>
+            </div>
+            <div class="modal-content confirm-content">
+                <img src="../../frontend/admin-console/js/img/danger-confirm.webp" alt="" class="confirm-mascot mascot-img" aria-hidden="true" data-mascot-breath data-mascot-breath-amplitude="1.4" data-mascot-breath-period="8800">
+                <p id="confirm-message"></p>
+            </div>
+            <div class="modal-actions split-actions">
+                <button type="button" class="layui-btn layui-btn-primary" data-action="confirm-no">取消</button>
+                <button type="button" class="layui-btn layui-btn-danger" data-action="confirm-yes">确认</button>
+            </div>
+        </div>
+    </div>
+</template>
+<script src="../../frontend/admin-console/js/state.js?v=20260611-remote-lua-variable-list" defer></script>
+<script src="../../frontend/admin-console/js/http.js?v=20260611-remote-lua-variable-list" defer></script>
+<script src="../../frontend/admin-console/js/view.js?v=20260611-remote-lua-variable-list" defer></script>
+<script src="../../frontend/admin-console/js/app.js?v=20260611-remote-lua-variable-list" defer></script>
+</body>
+</html>
