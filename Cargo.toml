@@ -24,7 +24,7 @@ hmac = "0.12"
 image = { version = "0.25", default-features = false, features = ["gif", "jpeg", "png", "webp"] }
 md-5 = "0.10"
 rand = "0.8"
-p256 = { version = "0.13", features = ["ecdsa", "pem"] }
+p256 = { version = "0.14", features = ["ecdsa", "pem"] }
 reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
 rsa = { version = "0.9", features = ["pem"] }
 serde = { version = "1.0", features = ["derive"] }
