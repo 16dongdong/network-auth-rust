@@ -1,6 +1,5 @@
 # Network Auth Rust
 
-[![CI](https://github.com/16dongdong/network-auth-rust/actions/workflows/ci.yml/badge.svg)](https://github.com/16dongdong/network-auth-rust/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 ![Rust 2024](https://img.shields.io/badge/Rust-2024-orange.svg)
 ![Axum](https://img.shields.io/badge/Axum-0.8-blue.svg)
@@ -16,7 +15,7 @@ Network Auth Rust 是一个使用 **Vibe Coding** 协作完成的网络授权验
 | --- | --- |
 | 完整产品闭环 | 从客户端授权、后台管理、安装初始化到部署切换都有真实实现。 |
 | 安全协议密度高 | 覆盖 HMAC、防重放、AES-GCM、RSA 密钥封装、P256 设备签名和敏感配置加密。 |
-| 工程化程度高 | 包含 schema、SDK 模板、CI、开源审计脚本、发布 smoke、readiness gate 和回滚脚本。 |
+| 工程化程度高 | 包含 schema、SDK 模板、本地验证、开源审计脚本、发布 smoke、readiness gate 和回滚脚本。 |
 | 适合简历展示 | 不是单点 demo，而是可以展示后端设计、系统安全、运维发布和自动化验证的综合项目。 |
 
 ## 预览
