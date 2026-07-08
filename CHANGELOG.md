@@ -7,4 +7,4 @@
 - 补齐开源项目基础文件、贡献说明、安全策略和第三方声明。
 - 清理本地私有配置、私有凭据笔记和未授权字体资源。
 - 增强 `.gitignore` 与 `.gitattributes`，降低误提交运行产物和密钥文件的风险。
-- 增加 GitHub Actions、Dependabot 和本地开源审计脚本。
+- 增加 GitHub Actions 和本地开源审计脚本。
