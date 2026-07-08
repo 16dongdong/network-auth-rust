@@ -4,7 +4,7 @@
 
 ## 开发流程
 
-1. Fork 仓库并从 `master` 创建特性分支。
+1. Fork 仓库并从 `main` 创建特性分支。
 2. 复制 `config/local.example.php` 为本地配置，准备 MySQL 或 MariaDB。
 3. 保持改动聚焦，一个 Pull Request 只解决一个明确问题。
 4. 提交前运行格式化、编译检查和相关测试。
@@ -16,7 +16,6 @@
 cargo fmt --check
 cargo check -j1
 cargo test -j1 --lib
-.\scripts\openSourceAudit.ps1
 cargo run -- preflight --config config/local.php --database --public-root public --schema resources/install/schema.sql --storage-root storage
 ```
 

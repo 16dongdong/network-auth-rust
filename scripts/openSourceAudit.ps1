@@ -36,8 +36,7 @@ function Assert-NoSecretText {
         $secretPattern,
         '--',
         '.',
-        ':!scripts/openSourceAudit.ps1',
-        ':!docs/openSourceChecklist.md'
+        ':!scripts/openSourceAudit.ps1'
     )
 
     if ($matches.Count -gt 0) {
@@ -57,8 +56,7 @@ function Assert-CurrentHistoryClean {
         'HEAD',
         '--',
         '.',
-        ':!scripts/openSourceAudit.ps1',
-        ':!docs/openSourceChecklist.md'
+        ':!scripts/openSourceAudit.ps1'
     )
 
     if ($matches.Count -gt 0) {
